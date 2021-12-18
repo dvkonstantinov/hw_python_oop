@@ -6,7 +6,7 @@ from typing import Dict, Type
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
-    CONST = (
+    MESSAGE_TEMPLATE = (
         'Тип тренировки: {}; '
         'Длительность: {:.3f} ч.; '
         'Дистанция: {:.3f} км; '
@@ -22,7 +22,7 @@ class InfoMessage:
 
     def get_message(self) -> str:
         """Вернуть сообщение."""
-        return self.CONST.format(*[value for value in asdict(self).values()])
+        return self.MESSAGE_TEMPLATE.format(*asdict(self).values())
 
 
 class Training:
@@ -71,8 +71,8 @@ class Running(Training):
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         training_time_in_min = self.duration * self.MIN_IN_HOUR
-        calories = ((Running.RATIO_CALORIES_1 * self.get_mean_speed()
-                     - Running.RATIO_CALORIES_2) * self.weight
+        calories = ((self.RATIO_CALORIES_1 * self.get_mean_speed()
+                     - self.RATIO_CALORIES_2) * self.weight
                     / Training.M_IN_KM * training_time_in_min)
         return calories
 
@@ -131,12 +131,12 @@ class Swimming(Training):
 def read_package(training_type: str, training_data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
     # Проверка правильности введенного типа тренировки
-    if training_type not in [training_type]:
-        raise ValueError("Введен неверный тип тренировки")
     workout_dict: Dict[str, Type[Training]] = {
         'RUN': Running,
         'WLK': SportsWalking,
         'SWM': Swimming}
+    if training_type not in workout_dict.keys():
+        raise ValueError("Введен неверный тип тренировки")
     name_of_class = workout_dict[training_type]
     return name_of_class(*training_data)
 
