@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Union, NewType
+from typing import Dict, Union, Type
 
 
 @dataclass()
@@ -127,18 +127,15 @@ class Swimming(Training):
 
 def read_package(training_type: str, training_data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-
-    # Список всех подклассов класса Training
-    subclasses_list = Training.__subclasses__()
-    training_class = NewType('training_class',
-                             Union[','.join([cls.__name__ for cls in
-                                             subclasses_list])])
     # Проверка правильности введенного типа тренировки
     if training_type not in ['RUN', 'WLK', 'SWM']:
         raise TypeError("Введен неверный тип тренировки")
-    workout_dict: Dict[str, training_class] = {'RUN': Running,
-                                               'WLK': SportsWalking,
-                                               'SWM': Swimming}
+    workout_dict: Dict[str, Type[Union[Running,
+                                       Swimming,
+                                       SportsWalking]]] = {
+        'RUN': Running,
+        'WLK': SportsWalking,
+        'SWM': Swimming}
     name_of_class = workout_dict[training_type]
     return name_of_class(*training_data)
 
