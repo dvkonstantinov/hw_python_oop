@@ -130,11 +130,11 @@ class Swimming(Training):
 
 def read_package(training_type: str, training_data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    # Проверка правильности введенного типа тренировки
     workout_dict: Dict[str, Type[Training]] = {
         'RUN': Running,
         'WLK': SportsWalking,
         'SWM': Swimming}
+    # Проверка правильности введенного типа тренировки
     if training_type not in workout_dict.keys():
         raise ValueError("Введен неверный тип тренировки")
     name_of_class = workout_dict[training_type]
